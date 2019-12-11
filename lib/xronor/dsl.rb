@@ -56,6 +56,10 @@ module Xronor
       end
     end
 
+    def metadata(name)
+      Xronor::DSL::Job.define_metadata(name)
+    end
+
     def result
       @result
     end

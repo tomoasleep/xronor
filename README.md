@@ -12,6 +12,8 @@ job_template "/bin/bash -l -c ':job'"
 
 job_type :rake, "bundle exec rake :task RAILS_ENV=production"
 
+metadata :use_replica
+
 default do
   timezone "Asia/Tokyo" # UTC+9
 end
@@ -31,6 +33,13 @@ every :day, at: '0:00 am', timezone: "Europe/Berlin" do # UTC+1
   name "Send notifications for Berlin"
   description "Send notifications for Berlin"
   rake "send_notification[Europe/Berlin]"
+end
+
+every :day, at: '3:00 am' do
+  name "Calculate daily KPI"
+  description "Calculate daily KPI"
+  rake "calculate_daily_kpi"
+  use_replica true
 end
 
 every :wednesday, at: '0:10 am' do

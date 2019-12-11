@@ -3,6 +3,15 @@ module Xronor
     class Job
       include Xronor::DSL::Checker
 
+      class << self
+        def define_metadata(name)
+          fail "Cannot use #{name} for metadata" if %i(description name schedule command).include?(name.to_sym)
+          define_method(name) do |value|
+            @result.public_send("#{name}=", value)
+          end
+        end
+      end
+
       def initialize(frequency, options, &block)
         @frequency = frequency
         @options = options

@@ -11,6 +11,8 @@ job_template "/bin/bash -l -c ':job'"
 job_type :rake, "bundle exec rake :task RAILS_ENV=production"
 job_type :runner, "bin/rails runner ':task' RAILS_ENV=production"
 
+metadata :use_replica_db
+
 default do
   prefix "scheduler-"
   timezone "Asia/Tokyo"
@@ -21,6 +23,7 @@ every :day, at: "10:30 am" do
   name "Update Elasticsearch"
   description "Update Elasticsearch indices"
   rake "update_elasticsearch"
+  use_replica_db true
 end
 
 every "0 12 10,20 * *" do
@@ -39,7 +42,9 @@ end
           expect(result.options).to be_a Hash
           expect(result.jobs.length).to eq 2
           expect(result.jobs["Update Elasticsearch"].command).to eq "/bin/bash -l -c 'bundle exec rake update_elasticsearch RAILS_ENV=production'"
+          expect(result.jobs["Update Elasticsearch"].use_replica_db).to eq true
           expect(result.jobs["Send reports"].command).to eq  "/bin/bash -l -c 'bin/rails runner '\\''script/send_reports'\\'' RAILS_ENV=production'"
+          expect(result.jobs["Send reports"].use_replica_db).to eq nil
         end
       end
 
