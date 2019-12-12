@@ -87,7 +87,7 @@ To resolve above problems, we need:
 
 ## Requirements
 
-Ruby 2.2.2 or above
+Ruby 2.3.0 or above
 
 ## Installation
 
